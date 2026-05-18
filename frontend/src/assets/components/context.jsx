@@ -163,7 +163,7 @@ useEffect(() => {
       await client.get("/csrf/");
       await client.get("/user", { withCredentials: true });
       setCurrentUser(true);
-    } catch (error) {
+    } catch {
       setCurrentUser(false);
     }
   };
@@ -196,14 +196,14 @@ email: email.current,
 username: username.current,
 password: password.current,
 })
-.then(async function (res) {
+.then(async function () {
 await client.get("/csrf/");
         client
 .post("/login", {
 email: email.current,
 password: password.current,
 },{withCredentials:true})
-.then(function (res) {
+.then(function () {
 setCurrentUser(true);
 setResponseCall(false);
 });
@@ -228,7 +228,7 @@ async function submitLogin(e) {
 
     setCurrentUser(true);
     error.current = "";
-  } catch (error_) {
+  } catch {
     error.current = "Wrong email or password";
   }
 

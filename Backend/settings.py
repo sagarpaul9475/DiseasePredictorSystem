@@ -84,16 +84,24 @@ TEMPLATES = [
 WSGI_APPLICATION = 'Backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-DATABASES = {
+if DATABASE_NAME:
+    DATABASES = {
         'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': DATABASE_NAME,
-        'USER': USER,
-        'PASSWORD': PASS,
-        'HOST': 'localhost',
-        'PORT': 5432,
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': DATABASE_NAME,
+            'USER': USER or '',
+            'PASSWORD': PASS or '',
+            'HOST': os.getenv('DATABASE_HOST', 'localhost'),
+            'PORT': os.getenv('DATABASE_PORT', '5432'),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 AUTH_USER_MODEL = 'Accounts.AppUser'
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
@@ -128,9 +136,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 STATIC_URL = 'assets/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'frontend/dist/assets')
-]
+STATICFILES_DIRS = []
+frontend_assets = os.path.join(BASE_DIR, 'frontend/dist/assets')
+if os.path.isdir(frontend_assets):
+    STATICFILES_DIRS.append(frontend_assets)
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

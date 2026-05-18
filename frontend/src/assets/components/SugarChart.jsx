@@ -11,7 +11,7 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 export default function SugarChart({ chartData }) {
-const { after, before, date } = chartData;
+const { after = [], before = [], date = [] } = chartData || {};
   ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -57,14 +57,14 @@ const data = {
 datasets: [
 {
 label: "Before",
-data: after,
+data: before,
 borderColor: "rgba(0, 205, 145, 0.61)",
 backgroundColor: "white",
 yAxisID: "y",
 },
 {
 label: "After",
-data: before,
+data: after,
 borderColor: "rgba(84, 18, 255, 0.68)",
 backgroundColor: "white",
 yAxisID: "y",

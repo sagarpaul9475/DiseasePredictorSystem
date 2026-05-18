@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from .serializers import DoctorProfileSerializer, PatientSerializer, UserRegisterSerializer, UserLoginSerializer, UserSerializer
 from rest_framework import permissions, status, generics
 from .validations import custom_validation, validate_email, validate_password, validate_username
-from .models import DoctorProfile, AppUser
+from .models import DoctorProfile, AppUser, PatientProfile as PatientProfileModel
 from django.http import JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 class UserRegister(APIView):
@@ -62,14 +62,13 @@ class PatientProfile(APIView):
     permission_classes = (permissions.IsAuthenticated,)
     authentication_classes = (SessionAuthentication,)
     def get(self, request):
-        profile = request.user.profile
-        if not profile:
-            return Response({'error': 'User does not have a profile'}, status=status.HTTP_404_NOT_FOUND)
+        profile, _ = PatientProfileModel.objects.get_or_create(user=request.user)
         serializer = PatientSerializer(profile)
         return Response(serializer.data, status=status.HTTP_200_OK)
     def put(self, request):
+        profile, _ = PatientProfileModel.objects.get_or_create(user=request.user)
         serializer = PatientSerializer(
-            request.user.profile, data=request.data, partial=True)
+            profile, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -82,7 +81,7 @@ class DoctorProfileListAPIView(generics.ListAPIView):
         if speciality == 'All':
             queryset = DoctorProfile.objects.all()
         else:
-            queryset = DoctorProfile.objects.filter(speciality_iexact=speciality)
+            queryset = DoctorProfile.objects.filter(speciality__iexact=speciality)
         queryset = queryset.order_by('?')[:12]
         return queryset
 def insert_data(request):

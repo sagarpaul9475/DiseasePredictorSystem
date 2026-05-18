@@ -48,13 +48,13 @@ class PatientProfile(models.Model):
     sex = models.CharField(max_length=20, default='Not to say')
     first_name = models.CharField(max_length=20, default='a')
     last_name = models.CharField(max_length=20, default='a')
-    medical_history = ArrayField(models.CharField(max_length=200), blank=True)
+    medical_history = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     dob_day = models.IntegerField(default=0)
     dob_month = models.IntegerField(default=0)
     dob_year = models.IntegerField(default=0)
     height = models.IntegerField(default=0)
     weight = models.IntegerField(default=0)
-    current_med = ArrayField(models.CharField(max_length=200), blank=True)
+    current_med = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     exercise = models.CharField(max_length=200, default='no exercise')
     diet = models.CharField(max_length=200, default='no diet')
     smoke_cons  = models.CharField(max_length=200, default='no smoke')
@@ -70,8 +70,8 @@ class DoctorProfile(models.Model):
     experience = models.IntegerField(default=0)
     work_address = models.CharField(max_length=200, default='NA')
     mobile_no = models.CharField(max_length=200, default='0000000000')
-    image_link = models.URLField(max_length=200)
-    profile_link = models.URLField(max_length=200)
+    image_link = models.URLField(max_length=500, blank=True, default='')
+    profile_link = models.URLField(max_length=500, blank=True, default='')
 
 class symptoms_diseases(models.Model):
     itching = models.IntegerField()
@@ -208,6 +208,6 @@ class symptoms_diseases(models.Model):
         db_table = 'symptoms_diseases'
 
 class Predicted_Diseases(models.Model) :
-    diseases = ArrayField(models.CharField(max_length=200), blank=True)
-    diseases_prob = ArrayField(models.FloatField(default=0), blank=True)
+    diseases = ArrayField(models.CharField(max_length=200), blank=True, default=list)
+    diseases_prob = ArrayField(models.FloatField(default=0), blank=True, default=list)
     consult_doctor = models.CharField(max_length=100, default="")

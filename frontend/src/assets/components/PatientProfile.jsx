@@ -17,13 +17,21 @@ const [logModal, setLogModal] = useState(false);
 const [profileModal, setProfileModal] = useState(false);
 const [consumptionModal, setConsumptionModal] = useState(false);
 const { first_name, height, weight, last_name } = responseData;
+const bloodGlucoseData = responseData.blood_glucose || { date: [], before: [], after: [] };
+const bpLogData = responseData.bp_log || { date: [], high: [], low: [] };
 const [bmi, setBmi] = useState(0);
 const [bmiColor, setBmiColor] = useState("");
 useEffect(() => {
 // Calculate BMI
 const calculateBMI = () => {
-const heightInMeters = height / 100; // Convert height to meters
-const bmiValue = weight / (heightInMeters * heightInMeters); // BMI formula
+const heightInMeters = Number(height) / 100; // Convert height to meters
+const weightInKg = Number(weight);
+if (!heightInMeters || !weightInKg) {
+setBmi(0);
+setBmiColor("bg-gray-400");
+return;
+}
+const bmiValue = weightInKg / (heightInMeters * heightInMeters); // BMI formula
 setBmi(bmiValue);
 // Set BMI color
 if (bmiValue < 18.5) {
@@ -46,7 +54,7 @@ return (
 {Object.keys(responseData).length > 0 ? (
 <>
 <div className="w-full flex flex-wrap justify-center items-center">
-<div className="bg-gray-800 w-5/6 md:p-2 sm:w-1/6 lg:w-1/5 rounded-md">
+<div className="w-5/6 rounded-2xl bg-white p-3 shadow-lg sm:w-auto">
 <Sidebar
                 setRecord={setRecord}
                 setLogModal={setLogModal}
@@ -74,10 +82,10 @@ BMI
 </div>
 <div className="charts-container w-full rounded-md flex flex-wrap justify-center items-center mt-4 gap-4">
 <div className="w-full sm:w-47 rounded-md ">
-<BP_chart chartData={responseData.bp_log} />
+<BP_chart chartData={bpLogData} />
 </div>
 <div className="w-full  sm:w-47 rounded-md">
-<Sugar_chart chartData={responseData.blood_glucose_log} />
+<Sugar_chart chartData={bloodGlucoseData} />
 </div>
 </div>
 <div className=" my-2 w-full sm:h-96 md:h-1/2 rounded-md flex flex-wrap justify-center items-center gap-4">
