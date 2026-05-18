@@ -20,7 +20,7 @@ export default function BP_chart({ chartData }) {
     Tooltip,
     Legend
 );
-const { low, date, high } = chartData;
+const { low = [], date = [], high = [] } = chartData || {};
 const options = {
 responsive: true,
 maintainAspectRatio: false,

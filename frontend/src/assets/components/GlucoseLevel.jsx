@@ -27,8 +27,6 @@ const GlucoseLevel = ({ responseData }) => {
     return "";
   };
 
-  let prevDate = null;
-
   return (
     <div className="px-1 bg-white">
       <table className="w-full border-collapse">
@@ -56,8 +54,8 @@ const GlucoseLevel = ({ responseData }) => {
               return null;
             }
 
-            const isFirstDate = prevDate !== date;
-            prevDate = date;
+            const previousDate = responseData.blood_glucose.date[index - 1];
+            const isFirstDate = index === 0 || previousDate !== date;
 
             return (
               <tr key={index} className="border-b">
